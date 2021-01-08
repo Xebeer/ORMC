@@ -6,9 +6,9 @@ if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
 endif()
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -20,6 +20,25 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+
+add_executable(direct_kinematics src/direct_kinematics.cpp)
+add_executable(trajectory_generator src/trajectory_generator.cpp)
+add_executable(program_parser src/program_parser.cpp)
+
+ament_target_dependencies(direct_kinematics rclcpp std_msgs tf2 tf2_geometry_msgs)
+ament_target_dependencies(trajectory_generator rclcpp std_msgs)
+ament_target_dependencies(program_parser rclcpp std_msgs)
+
+install(TARGETS
+direct_kinematics
+trajectory_generator
+program_parser
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
